@@ -26,7 +26,7 @@
 
 ## 🛠 Tech Stack
 
-- Java 21
+- Java 17
 - Spring Boot 3
 - PostgreSQL
 - Maven
@@ -41,7 +41,7 @@
 
 ### Prerequisites
 
-- Java 21+
+- Java 17+
 - Maven
 - PostgreSQL running on `localhost:5432` with:
   - Database: `studentdb`
