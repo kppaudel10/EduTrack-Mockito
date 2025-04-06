@@ -1,6 +1,7 @@
 package com.kul.edutrackmockito.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.Date;
  **/
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "student")
 public class Student {
@@ -30,4 +32,7 @@ public class Student {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
+    public Student() {
+
+    }
 }

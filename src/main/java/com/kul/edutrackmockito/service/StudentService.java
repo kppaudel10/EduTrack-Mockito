@@ -1,6 +1,9 @@
 package com.kul.edutrackmockito.service;
 
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
+import com.kul.edutrackmockito.pojo.StudentResPojo;
+
+import java.util.List;
 
 /**
  * author: Kul Paudel
@@ -9,4 +12,8 @@ import com.kul.edutrackmockito.pojo.StudentReqPojo;
 public interface StudentService {
 
     Integer addStudent(StudentReqPojo studentReqPojo);
+
+    List<StudentResPojo> getStudents();
+
+    StudentResPojo getStudentById(Integer id);
 }
