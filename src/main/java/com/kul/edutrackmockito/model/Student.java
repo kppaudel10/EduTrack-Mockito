@@ -28,6 +28,10 @@ public class Student {
     @Column(name = "last_name")
     private String lastName;
 
+    private String email;
+
+    private String contact;
+
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;

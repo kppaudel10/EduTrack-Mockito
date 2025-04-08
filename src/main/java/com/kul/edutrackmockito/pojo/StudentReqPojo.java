@@ -1,8 +1,6 @@
 package com.kul.edutrackmockito.pojo;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.*;
 
 import java.util.Date;
 
@@ -12,10 +10,14 @@ import java.util.Date;
  **/
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class StudentReqPojo {
     private Integer id;
     private String firstName;
     private String lastName;
-    private Date birthDate;
+    private String birthDate;
+    private String email;
+    private String contact;
 }
 

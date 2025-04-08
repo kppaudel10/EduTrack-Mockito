@@ -8,6 +8,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -18,14 +20,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepo studentRepo;
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public Integer addStudent(StudentReqPojo studentReqPojo) {
-        Student student = Student.builder()
-                .id(studentReqPojo.getId())
-                .firstName(studentReqPojo.getFirstName())
-                .lastName(studentReqPojo.getLastName())
-                .dateOfBirth(studentReqPojo.getBirthDate()).build();
+        Student student;
+        try {
+            student = Student.builder()
+                    .id(studentReqPojo.getId())
+                    .firstName(studentReqPojo.getFirstName())
+                    .lastName(studentReqPojo.getLastName())
+                    .email(studentReqPojo.getEmail())
+                    .contact(studentReqPojo.getContact())
+                    .dateOfBirth(simpleDateFormat.parse(studentReqPojo.getBirthDate())).build();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         studentRepo.save(student);
         return student.getId();
     }
