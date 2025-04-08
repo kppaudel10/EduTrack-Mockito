@@ -1,6 +1,7 @@
 package com.kul.edutrackmockito.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +14,10 @@ import java.util.Date;
  **/
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "student")
+@Builder
+@AllArgsConstructor
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_seq_gen")
