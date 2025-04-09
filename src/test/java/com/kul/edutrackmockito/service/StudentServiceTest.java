@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,9 +49,27 @@ public class StudentServiceTest {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+    private final List<Student> studentList = new ArrayList<>();
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws ParseException {
+        studentList.add(Student.builder()
+                .id(1)
+                .firstName("Leonel")
+                .lastName("Messi")
+                .email("messi@gmial.com")
+                .contact("9840459818")
+                .dateOfBirth(dateFormat.parse("1985-01-01")).build());
+
+        studentList.add(Student.builder()
+                .id(2)
+                .firstName("Kul")
+                .lastName("Paudel")
+                .email("kulpaudel@gmail.com")
+                .contact("9800000002")
+                .dateOfBirth(dateFormat.parse("1995-05-05"))
+                .build());
+
         studentReqPojo = StudentReqPojo.builder()
                 .id(1)
                 .firstName("Leonel")
@@ -61,15 +80,8 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testAddStudent() throws Exception {
-        Student student = Student.builder()
-                .id(2)
-                .firstName("Leonel")
-                .lastName("Messi")
-                .email("messi@gmial.com")
-                .contact("9840459818")
-                .dateOfBirth(dateFormat.parse("1985-01-01")).build();
-        when(studentRepo.save(any(Student.class))).thenReturn(student);
+    void testAddStudent() {
+        when(studentRepo.save(any(Student.class))).thenReturn(any());
 
         int result = studentService.addStudent(studentReqPojo);
         assertEquals(1, result);
@@ -77,23 +89,16 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testFindStudentById() throws ParseException {
-        Student student = Student.builder()
-                .id(2)
-                .firstName("Bishal")
-                .lastName("Thakur")
-                .email("bishal@gmail.com")
-                .contact("9840459812")
-                .dateOfBirth(dateFormat.parse("1995-05-05")).build();
+    void testFindStudentById() {
         // We are saying: “Whenever this method is called with ID 2, return the student object above.”
-        when(studentRepo.findById(2)).thenReturn(Optional.of(student));
+        when(studentRepo.findById(1)).thenReturn(Optional.of(studentList.get(0)));
         // Calling the actual service method
-        StudentResPojo result = studentService.getStudentById(2);
+        StudentResPojo result = studentService.getStudentById(1);
         // Verifying the output
         assertNotNull(result);
-        assertEquals("Bishal", result.getFirstName());
+        assertEquals("Leonel", result.getFirstName());
         // checks repo is called during the method execution
-        verify(studentRepo).findById(2);
+        verify(studentRepo).findById(1);
     }
 
     @Test
@@ -108,16 +113,9 @@ public class StudentServiceTest {
 
     @Test
     void testUpdateStudent() throws Exception {
-        Student student = Student.builder()
-                .id(1)
-                .firstName("Leonel")
-                .lastName("Messi")
-                .email("messi@gmial.com")
-                .contact("9840459818")
-                .dateOfBirth(dateFormat.parse("1985-01-01")).build();
 
-        when(studentRepo.findById(1)).thenReturn(Optional.of(student));
-        when(studentRepo.save(any(Student.class))).thenReturn(student);
+        when(studentRepo.findById(1)).thenReturn(Optional.of(studentList.get(0)));
+        when(studentRepo.save(any(Student.class))).thenReturn(studentList.get(0));
 
         studentReqPojo.setId(1);
         studentReqPojo.setEmail("leonal@gmail.com");
@@ -132,30 +130,9 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testGetAllStudents() throws ParseException {
-        // Arrange: create mock response
-        Student student1 = Student.builder()
-                .id(1)
-                .firstName("Kul")
-                .lastName("Paudel")
-                .email("kul@example.com")
-                .contact("9800000001")
-                .dateOfBirth(dateFormat.parse("1990-01-01"))
-                .build();
-
-        Student student2 = Student.builder()
-                .id(2)
-                .firstName("Bishal")
-                .lastName("Thakur")
-                .email("bishal@example.com")
-                .contact("9800000002")
-                .dateOfBirth(dateFormat.parse("1995-05-05"))
-                .build();
-
-        List<Student> mockList = List.of(student1, student2);
-
+    void testGetAllStudents() {
         // Mock the repo method
-        when(studentRepo.getStudents()).thenReturn(mockList);
+        when(studentRepo.getStudents()).thenReturn(studentList);
 
         // Act: call the service
         List<StudentResPojo> result = studentService.getStudents();
@@ -163,8 +140,8 @@ public class StudentServiceTest {
         // Assert: verify returned list matches expectations
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Kul", result.get(0).getFirstName());
-        assertEquals("Bishal", result.get(1).getFirstName());
+        assertEquals("Leonel", result.get(0).getFirstName());
+        assertEquals("Kul", result.get(1).getFirstName());
 
         // Verify the repo method was called once
         verify(studentRepo, times(1)).getStudents();
