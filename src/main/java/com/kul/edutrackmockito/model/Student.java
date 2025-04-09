@@ -20,8 +20,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_seq_gen")
-    @SequenceGenerator(name = "student_seq_gen", sequenceName = "student_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "first_name")

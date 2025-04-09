@@ -2,6 +2,7 @@ package com.kul.edutrackmockito.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
+import com.kul.edutrackmockito.pojo.StudentResPojo;
 import com.kul.edutrackmockito.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,13 +15,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -37,49 +40,80 @@ public class StudentControllerTest {
 
     @MockitoBean
     private StudentService studentService;
-
-    private List<StudentReqPojo> studentList = new ArrayList<>();
-
     private StudentReqPojo studentReqPojo;
+    private StudentResPojo studentResPojo;
+    private ObjectMapper objectMapper;
+
 
     @BeforeEach
-    void setStudentResPojo() {
-        studentReqPojo = new StudentReqPojo(1, "Kul", "Paudel", "2000-01-01",
-                "kulpaudel56@gmail.com", "9840459818");
-        studentList.add(new StudentReqPojo(2, "Anisha", "Shrestha", "1998-05-12",
-                "anisha.shrestha@gmail.com", "9812345678"));
-        studentList.add(new StudentReqPojo(3, "Bibek", "Thapa", "1995-11-23",
-                "bibek.thapa@yahoo.com", "9801234567"));
-        studentList.add(new StudentReqPojo(4, "Sita", "Gurung", "2001-07-15",
-                "sita.gurung@outlook.com", "9845123456"));
-        studentList.add(new StudentReqPojo(5, "Ram", "Karki", "1999-03-30",
-                "ram.karki@gmail.com", "9823456789"));
-        studentList.add(new StudentReqPojo(6, "Nirajan", "Bhandari", "2002-12-01",
-                "nirajan.bhandari@mail.com", "9867890123"));
+    void setStudentResPojo() throws ParseException {
+        objectMapper = new ObjectMapper();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        studentReqPojo = StudentReqPojo.builder()
+                .id(1)
+                .firstName("Kul")
+                .lastName("Paudel")
+                .email("kul@example.com")
+                .contact("9800000000")
+                .birthDate("1995-01-01")
+                .build();
+
+        studentResPojo = StudentResPojo.builder()
+                .id(1)
+                .firstName("Kul")
+                .lastName("Paudel")
+                .email("kul@example.com")
+                .birthDate(dateFormat.parse("1990-01-01"))
+                .contact("9800000001")
+                .build();
     }
 
     @Test
-    void addStudentTest() throws Exception {
-        Mockito.when(studentService.addStudent(studentReqPojo)).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
+    void testSaveStudent() throws Exception {
+        Mockito.when(studentService.addStudent(any(StudentReqPojo.class))).thenReturn(1);
 
-        RequestBuilder requestBuilder = MockMvcRequestBuilders
-                .post("/api/v1/student")
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .content(asJsonString(studentReqPojo))
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
-
-        MvcResult result = mockMvc.perform(requestBuilder)
-                .andExpect(status().isCreated())
-                .andReturn();
-        log.info("Result: {}", result);
+        mockMvc.perform(post("/api/v1/student")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(studentReqPojo)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Successfully saved"))
+                .andExpect(jsonPath("$.data").value(1));
     }
 
-    public static String asJsonString(final Object obj) {
-        try {
-            return new ObjectMapper().writeValueAsString(obj);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @Test
+    void testUpdateStudent() throws Exception {
+        studentReqPojo.setEmail("updatedkul@gmail.com");
+
+        Mockito.when(studentService.updateStudent(any(StudentReqPojo.class))).thenReturn(1);
+
+        mockMvc.perform(put("/api/v1/student")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(studentReqPojo)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Successfully saved"))
+                .andExpect(jsonPath("$.data").value(1));
+    }
+
+    @Test
+    void testGetStudents() throws Exception {
+
+        Mockito.when(studentService.getStudents()).thenReturn(List.of(studentResPojo));
+
+        mockMvc.perform(get("/api/v1/student"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Successfully fetch"))
+                .andExpect(jsonPath("$.data[0].firstName").value("Kul"));
+    }
+
+    @Test
+    void testGetStudentById() throws Exception {
+
+        Mockito.when(studentService.getStudentById(eq(1))).thenReturn(studentResPojo);
+
+        mockMvc.perform(post("/api/v1/student/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Successfully saved"))
+                .andExpect(jsonPath("$.data.firstName").value("Kul"));
     }
 
 

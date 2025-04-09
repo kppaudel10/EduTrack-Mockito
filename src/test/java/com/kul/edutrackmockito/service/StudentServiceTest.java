@@ -47,6 +47,7 @@ public class StudentServiceTest {
     private StudentReqPojo studentReqPojo;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private Student student;
 
 
     @BeforeEach

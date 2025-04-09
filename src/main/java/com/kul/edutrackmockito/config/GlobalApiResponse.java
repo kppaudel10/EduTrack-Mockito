@@ -1,5 +1,8 @@
 package com.kul.edutrackmockito.config;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +10,8 @@ import java.io.Serializable;
  * createdDate: 2025-04-06
  **/
 
+@Getter
+@Setter
 public class GlobalApiResponse implements Serializable {
     private String message;
     private Object data;
