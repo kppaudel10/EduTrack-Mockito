@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: EduTrack-Mockito
+  datasource:
+    url: jdbc:postgresql://localhost:5432/student_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+server:
+  port: 9090
+student:
+  max-age: 30
+

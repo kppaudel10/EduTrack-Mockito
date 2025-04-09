@@ -1,10 +1,18 @@
 package com.kul.edutrackmockito.utility;
 
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
+import org.hibernate.cfg.Environment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 public class StudentValidatorTest {
 
+    @InjectMocks
     private StudentValidator studentValidator;
     private StudentReqPojo studentReqPojo;
 
@@ -28,7 +37,7 @@ public class StudentValidatorTest {
                 .lastName("Messi")
                 .email("messi@gmail.com")
                 .contact("9840459818")
-                .birthDate("1985-01-01").build();
+                .birthDate("2000-01-01").build();
     }
 
     @Test
@@ -39,4 +48,5 @@ public class StudentValidatorTest {
         studentReqPojo.setEmail("messi.gmail.com");
         assertFalse(studentValidator.isValid(studentReqPojo));
     }
+
 }

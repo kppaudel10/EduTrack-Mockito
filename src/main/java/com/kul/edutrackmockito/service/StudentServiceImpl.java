@@ -7,6 +7,7 @@ import com.kul.edutrackmockito.repo.StudentRepo;
 import com.kul.edutrackmockito.utility.StudentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -25,6 +26,8 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepo studentRepo;
     private final SimpleDateFormat simpleDateFormat;
     private final StudentValidator studentValidator;
+    @Value("${student.max-age}")
+    private int maxAge;
 
     @Override
     public Integer addStudent(StudentReqPojo studentReqPojo) {
