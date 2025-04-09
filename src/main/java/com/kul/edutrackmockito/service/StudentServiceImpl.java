@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<StudentResPojo> getStudents() {
-        return studentRepo.getStudents();
+        List<Student> studentList = studentRepo.getStudents();
+        List<StudentResPojo> studentResPojoList = new ArrayList<>();
+        for (Student student : studentList) {
+            studentResPojoList.add(entityToPojo(student));
+        }
+        return studentResPojoList;
     }
 
     @Override

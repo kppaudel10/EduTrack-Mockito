@@ -47,7 +47,6 @@ public class StudentServiceTest {
     private StudentReqPojo studentReqPojo;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private Student student;
 
 
     @BeforeEach
@@ -135,25 +134,25 @@ public class StudentServiceTest {
     @Test
     void testGetAllStudents() throws ParseException {
         // Arrange: create mock response
-        StudentResPojo student1 = StudentResPojo.builder()
+        Student student1 = Student.builder()
                 .id(1)
                 .firstName("Kul")
                 .lastName("Paudel")
                 .email("kul@example.com")
                 .contact("9800000001")
-                .birthDate(dateFormat.parse("1990-01-01"))
+                .dateOfBirth(dateFormat.parse("1990-01-01"))
                 .build();
 
-        StudentResPojo student2 = StudentResPojo.builder()
+        Student student2 = Student.builder()
                 .id(2)
                 .firstName("Bishal")
                 .lastName("Thakur")
                 .email("bishal@example.com")
                 .contact("9800000002")
-                .birthDate(dateFormat.parse("1995-05-05"))
+                .dateOfBirth(dateFormat.parse("1995-05-05"))
                 .build();
 
-        List<StudentResPojo> mockList = List.of(student1, student2);
+        List<Student> mockList = List.of(student1, student2);
 
         // Mock the repo method
         when(studentRepo.getStudents()).thenReturn(mockList);

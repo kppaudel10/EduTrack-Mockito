@@ -1,10 +1,7 @@
 package com.kul.edutrackmockito.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -18,6 +15,7 @@ import java.util.Date;
 @Table(name = "student")
 @Builder
 @AllArgsConstructor
+
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
