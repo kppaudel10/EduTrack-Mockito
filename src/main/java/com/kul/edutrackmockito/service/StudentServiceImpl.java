@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * author: Kul Paudel
@@ -41,8 +42,19 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Integer updateStudent(StudentReqPojo studentReqPojo) {
-        return 0;
+    public Integer updateStudent(StudentReqPojo studentReqPojo) throws ParseException {
+        Optional<Student> optionalStudent = studentRepo.findById(studentReqPojo.getId());
+        if (optionalStudent.isEmpty()) {
+            throw new EntityNotFoundException("Student with id " + studentReqPojo.getId() + " not found");
+        }
+        Student student = optionalStudent.get();
+        student.setFirstName(studentReqPojo.getFirstName());
+        student.setLastName(studentReqPojo.getLastName());
+        student.setEmail(studentReqPojo.getEmail());
+        student.setContact(studentReqPojo.getContact());
+        student.setDateOfBirth(simpleDateFormat.parse(studentReqPojo.getBirthDate()));
+        studentRepo.save(student);
+        return student.getId();
     }
 
     @Override

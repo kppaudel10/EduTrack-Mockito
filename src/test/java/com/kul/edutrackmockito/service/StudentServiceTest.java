@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,8 +45,6 @@ public class StudentServiceTest {
     private StudentServiceImpl studentService;
 
     private StudentReqPojo studentReqPojo;
-
-    private StudentResPojo studentResPojo;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -105,6 +104,70 @@ public class StudentServiceTest {
                 () -> studentService.getStudentById(anyInt()));
         assertEquals("Student not found", exception.getMessage());
 
+    }
+
+    @Test
+    void testUpdateStudent() throws Exception {
+        Student student = Student.builder()
+                .id(1)
+                .firstName("Leonel")
+                .lastName("Messi")
+                .email("messi@gmial.com")
+                .contact("9840459818")
+                .dateOfBirth(dateFormat.parse("1985-01-01")).build();
+
+        when(studentRepo.findById(1)).thenReturn(Optional.of(student));
+        when(studentRepo.save(any(Student.class))).thenReturn(student);
+
+        studentReqPojo.setId(1);
+        studentReqPojo.setEmail("leonal@gmail.com");
+        int result = studentService.updateStudent(studentReqPojo);
+        assertEquals(1, result);
+
+        StudentResPojo studentResPojo = studentService.getStudentById(1);
+        assertNotNull(studentResPojo);
+
+        assertEquals(studentReqPojo.getEmail(), studentResPojo.getEmail());
+        verify(studentRepo).save(any(Student.class));
+    }
+
+    @Test
+    void testGetAllStudents() throws ParseException {
+        // Arrange: create mock response
+        StudentResPojo student1 = StudentResPojo.builder()
+                .id(1)
+                .firstName("Kul")
+                .lastName("Paudel")
+                .email("kul@example.com")
+                .contact("9800000001")
+                .birthDate(dateFormat.parse("1990-01-01"))
+                .build();
+
+        StudentResPojo student2 = StudentResPojo.builder()
+                .id(2)
+                .firstName("Bishal")
+                .lastName("Thakur")
+                .email("bishal@example.com")
+                .contact("9800000002")
+                .birthDate(dateFormat.parse("1995-05-05"))
+                .build();
+
+        List<StudentResPojo> mockList = List.of(student1, student2);
+
+        // Mock the repo method
+        when(studentRepo.getStudents()).thenReturn(mockList);
+
+        // Act: call the service
+        List<StudentResPojo> result = studentService.getStudents();
+
+        // Assert: verify returned list matches expectations
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Kul", result.get(0).getFirstName());
+        assertEquals("Bishal", result.get(1).getFirstName());
+
+        // Verify the repo method was called once
+        verify(studentRepo, times(1)).getStudents();
     }
 
 

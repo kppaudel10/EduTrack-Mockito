@@ -3,6 +3,7 @@ package com.kul.edutrackmockito.service;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
 import com.kul.edutrackmockito.pojo.StudentResPojo;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ public interface StudentService {
 
     Integer addStudent(StudentReqPojo studentReqPojo);
 
-    Integer updateStudent(StudentReqPojo studentReqPojo);
+    Integer updateStudent(StudentReqPojo studentReqPojo) throws ParseException;
 
     List<StudentResPojo> getStudents();
 

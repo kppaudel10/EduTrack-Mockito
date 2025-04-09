@@ -6,6 +6,8 @@ import com.kul.edutrackmockito.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 /**
  * author: Kul Paudel
  * createdDate: 2025-04-06
@@ -23,8 +25,9 @@ public class StudentController {
     }
 
     @PutMapping()
-    public GlobalApiResponse updateStudent(@RequestBody StudentReqPojo studentReqPojo) {
-        return new GlobalApiResponse("Successfully saved", studentService.addStudent(studentReqPojo));
+    public GlobalApiResponse updateStudent(@RequestBody StudentReqPojo studentReqPojo) throws ParseException {
+        return new GlobalApiResponse("Successfully saved",
+                studentService.updateStudent(studentReqPojo));
     }
 
     @GetMapping()
