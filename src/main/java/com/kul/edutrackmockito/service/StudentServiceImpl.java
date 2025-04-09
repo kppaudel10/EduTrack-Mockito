@@ -41,6 +41,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public Integer updateStudent(StudentReqPojo studentReqPojo) {
+        return 0;
+    }
+
+    @Override
     public List<StudentResPojo> getStudents() {
         return studentRepo.getStudents();
     }
@@ -58,6 +63,8 @@ public class StudentServiceImpl implements StudentService {
                 .firstName(student.getFirstName())
                 .lastName(student.getLastName())
                 .birthDate(student.getDateOfBirth())
+                .email(student.getEmail())
+                .contact(student.getContact())
                 .build();
     }
 

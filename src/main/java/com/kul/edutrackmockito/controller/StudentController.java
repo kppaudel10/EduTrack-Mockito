@@ -22,6 +22,11 @@ public class StudentController {
         return new GlobalApiResponse("Successfully saved", studentService.addStudent(studentReqPojo));
     }
 
+    @PutMapping()
+    public GlobalApiResponse updateStudent(@RequestBody StudentReqPojo studentReqPojo) {
+        return new GlobalApiResponse("Successfully saved", studentService.addStudent(studentReqPojo));
+    }
+
     @GetMapping()
     public GlobalApiResponse getStudents() {
         return new GlobalApiResponse("Successfully fetch", studentService.getStudents());
@@ -31,4 +36,6 @@ public class StudentController {
     public GlobalApiResponse getStudentById(@PathVariable Integer id) {
         return new GlobalApiResponse("Successfully saved", studentService.getStudentById(id));
     }
+
+
 }

@@ -2,18 +2,21 @@ package com.kul.edutrackmockito.service;
 
 import com.kul.edutrackmockito.model.Student;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
+import com.kul.edutrackmockito.pojo.StudentResPojo;
 import com.kul.edutrackmockito.repo.StudentRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,18 +41,17 @@ public class StudentServiceTest {
      * This means studentService will use the mocked version of studentRepo when its methods are called.
      */
     @InjectMocks
-    private StudentService studentService;
+    private StudentServiceImpl studentService;
 
     private StudentReqPojo studentReqPojo;
+
+    private StudentResPojo studentResPojo;
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
     @BeforeEach
     void setUp() {
-        //It initializes all @Mock and @InjectMocks annotated fields, so your mocks are active.
-        MockitoAnnotations.openMocks(this);
-
         studentReqPojo = StudentReqPojo.builder()
                 .id(1)
                 .firstName("Leonel")
@@ -62,7 +64,7 @@ public class StudentServiceTest {
     @Test
     void testAddStudent() throws Exception {
         Student student = Student.builder()
-                .id(1)
+                .id(2)
                 .firstName("Leonel")
                 .lastName("Messi")
                 .email("messi@gmial.com")
@@ -73,6 +75,26 @@ public class StudentServiceTest {
         int result = studentService.addStudent(studentReqPojo);
         assertEquals(1, result);
         verify(studentRepo, times(1)).save(any(Student.class));
+    }
+
+    @Test
+    void testFindStudentById() throws ParseException {
+        Student student = Student.builder()
+                .id(2)
+                .firstName("Bishal")
+                .lastName("Thakur")
+                .email("bishal@gmail.com")
+                .contact("9840459812")
+                .dateOfBirth(dateFormat.parse("1995-05-05")).build();
+        // We are saying: “Whenever this method is called with ID 2, return the student object above.”
+        when(studentRepo.findById(2)).thenReturn(Optional.of(student));
+        // Calling the actual service method
+        StudentResPojo result = studentService.getStudentById(2);
+        // Verifying the output
+        assertNotNull(result);
+        assertEquals("Bishal", result.getFirstName());
+        // checks repo is called during the method execution
+        verify(studentRepo).findById(2);
     }
 
 

@@ -13,6 +13,8 @@ public interface StudentService {
 
     Integer addStudent(StudentReqPojo studentReqPojo);
 
+    Integer updateStudent(StudentReqPojo studentReqPojo);
+
     List<StudentResPojo> getStudents();
 
     StudentResPojo getStudentById(Integer id);
