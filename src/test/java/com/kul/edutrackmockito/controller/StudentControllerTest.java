@@ -53,7 +53,7 @@ public class StudentControllerTest {
                 .id(1)
                 .firstName("Kul")
                 .lastName("Paudel")
-                .email("kul@example.com")
+                .email("kul@gmail.com")
                 .contact("9800000000")
                 .birthDate("1995-01-01")
                 .build();
@@ -62,7 +62,7 @@ public class StudentControllerTest {
                 .id(1)
                 .firstName("Kul")
                 .lastName("Paudel")
-                .email("kul@example.com")
+                .email("kul@gmail.com")
                 .birthDate(dateFormat.parse("1990-01-01"))
                 .contact("9800000001")
                 .build();

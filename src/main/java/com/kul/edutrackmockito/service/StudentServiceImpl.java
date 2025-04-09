@@ -4,6 +4,7 @@ import com.kul.edutrackmockito.model.Student;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
 import com.kul.edutrackmockito.pojo.StudentResPojo;
 import com.kul.edutrackmockito.repo.StudentRepo;
+import com.kul.edutrackmockito.utility.StudentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,11 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepo studentRepo;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final StudentValidator studentValidator;
 
     @Override
     public Integer addStudent(StudentReqPojo studentReqPojo) {
+        studentValidator.isValid(studentReqPojo);
         Student student;
         try {
             student = Student.builder()
@@ -44,6 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Integer updateStudent(StudentReqPojo studentReqPojo) throws ParseException {
+        studentValidator.isValid(studentReqPojo);
         Optional<Student> optionalStudent = studentRepo.findById(studentReqPojo.getId());
         if (optionalStudent.isEmpty()) {
             throw new EntityNotFoundException("Student with id " + studentReqPojo.getId() + " not found");
