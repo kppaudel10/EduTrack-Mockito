@@ -23,12 +23,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepo studentRepo;
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat simpleDateFormat;
     private final StudentValidator studentValidator;
 
     @Override
     public Integer addStudent(StudentReqPojo studentReqPojo) {
-        studentValidator.isValid(studentReqPojo);
+        if (!studentValidator.isValid(studentReqPojo)) {
+            throw new RuntimeException("Invalid student");
+        }
         Student student;
         try {
             student = Student.builder()
@@ -47,7 +49,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Integer updateStudent(StudentReqPojo studentReqPojo) throws ParseException {
-        studentValidator.isValid(studentReqPojo);
+        if (!studentValidator.isValid(studentReqPojo)) {
+            throw new RuntimeException("Invalid student");
+        }
         Optional<Student> optionalStudent = studentRepo.findById(studentReqPojo.getId());
         if (optionalStudent.isEmpty()) {
             throw new EntityNotFoundException("Student with id " + studentReqPojo.getId() + " not found");

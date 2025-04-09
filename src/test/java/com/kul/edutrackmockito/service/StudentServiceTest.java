@@ -4,6 +4,7 @@ import com.kul.edutrackmockito.model.Student;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
 import com.kul.edutrackmockito.pojo.StudentResPojo;
 import com.kul.edutrackmockito.repo.StudentRepo;
+import com.kul.edutrackmockito.utility.StudentValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,9 +46,12 @@ public class StudentServiceTest {
     @InjectMocks
     private StudentServiceImpl studentService;
 
-    private StudentReqPojo studentReqPojo;
+    @Mock
+    private StudentValidator studentValidator;
+    @Mock
+    private SimpleDateFormat dateFormat;
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private StudentReqPojo studentReqPojo;
 
     private final List<Student> studentList = new ArrayList<>();
 
@@ -80,12 +84,21 @@ public class StudentServiceTest {
     }
 
     @Test
-    void testAddStudent() {
+    void testAddStudentWithValidData() {
+        when(studentValidator.isValid(studentReqPojo)).thenReturn(true);
         when(studentRepo.save(any(Student.class))).thenReturn(any());
-
         int result = studentService.addStudent(studentReqPojo);
         assertEquals(1, result);
         verify(studentRepo, times(1)).save(any(Student.class));
+    }
+
+    @Test
+    void testAddStudentWithInvalidData() {
+        when(studentValidator.isValid(studentReqPojo)).thenReturn(false);
+        // Assert that an exception is thrown when validation fails
+        assertThrows(RuntimeException.class, () -> studentService.addStudent(studentReqPojo));
+        // Verify that save is never called
+        verify(studentRepo, never()).save(any(Student.class));
     }
 
     @Test
@@ -113,7 +126,7 @@ public class StudentServiceTest {
 
     @Test
     void testUpdateStudent() throws Exception {
-
+        when(studentValidator.isValid(studentReqPojo)).thenReturn(true);
         when(studentRepo.findById(1)).thenReturn(Optional.of(studentList.get(0)));
         when(studentRepo.save(any(Student.class))).thenReturn(studentList.get(0));
 
