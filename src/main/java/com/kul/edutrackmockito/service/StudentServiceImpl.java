@@ -53,7 +53,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResPojo getStudentById(Integer id) {
         Student student = studentRepo.findById(id).orElseThrow(() ->
-                new EntityNotFoundException("student not found"));
+                new EntityNotFoundException("Student not found"));
         return entityToPojo(student);
     }
 

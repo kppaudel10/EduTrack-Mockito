@@ -4,6 +4,7 @@ import com.kul.edutrackmockito.model.Student;
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
 import com.kul.edutrackmockito.pojo.StudentResPojo;
 import com.kul.edutrackmockito.repo.StudentRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -95,6 +95,16 @@ public class StudentServiceTest {
         assertEquals("Bishal", result.getFirstName());
         // checks repo is called during the method execution
         verify(studentRepo).findById(2);
+    }
+
+    @Test
+    void testStudentNotFound() {
+        // verify the service correctly through EntityNotFoundException correctly
+        when(studentRepo.findById(anyInt())).thenReturn(Optional.empty());
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> studentService.getStudentById(anyInt()));
+        assertEquals("Student not found", exception.getMessage());
+
     }
 
 
