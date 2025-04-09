@@ -1,16 +1,13 @@
 package com.kul.edutrackmockito.utility;
 
 import com.kul.edutrackmockito.pojo.StudentReqPojo;
-import org.hibernate.cfg.Environment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.context.TestPropertySource;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -29,7 +26,7 @@ public class StudentValidatorTest {
     private StudentReqPojo studentReqPojo;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         studentValidator = new StudentValidator();
         studentReqPojo = StudentReqPojo.builder()
                 .id(1)
@@ -38,6 +35,10 @@ public class StudentValidatorTest {
                 .email("messi@gmail.com")
                 .contact("9840459818")
                 .birthDate("2000-01-01").build();
+
+        Field field = StudentValidator.class.getDeclaredField("maxAge");
+        field.setAccessible(true);
+        field.set(studentValidator, 30);
     }
 
     @Test
@@ -49,4 +50,13 @@ public class StudentValidatorTest {
         assertFalse(studentValidator.isValid(studentReqPojo));
     }
 
+    @Test
+    void testStudentAge() {
+        // Test with valid age (born in 2000)
+        assertTrue(studentValidator.isValidAge(studentReqPojo.getBirthDate()));
+
+        // Change birthdate to an old date (1990) => age > 30
+        studentReqPojo.setBirthDate("1990-01-01");
+        assertFalse(studentValidator.isValidAge(studentReqPojo.getBirthDate()));
+    }
 }
